@@ -407,6 +407,19 @@ if [ "$INPUT_DOWNLOAD_TRANSLATIONS" = true ]; then
   fi
 fi
 
+if [ "$INPUT_CREATE_PULL_REQUEST" = true ]; then
+  [ -z "${GITHUB_TOKEN}" ] && {
+    echo "CAN NOT FIND 'GITHUB_TOKEN' IN ENVIRONMENT VARIABLES"
+    exit 1
+  }
+
+  [ -n "${INPUT_GPG_PRIVATE_KEY}" ] && {
+    setup_commit_signing
+  }
+
+  push_to_branch
+fi
+
 if [ "$INPUT_DOWNLOAD_BUNDLE" ]; then
   echo "DOWNLOADING BUNDLE $INPUT_DOWNLOAD_BUNDLE"
 
