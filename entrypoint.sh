@@ -241,22 +241,15 @@ push_to_branch() {
     CHECKOUT=${GITHUB_HEAD_REF:-${GITHUB_REF}}
     CHECKOUT=${CHECKOUT#refs/heads/}
     CHECKOUT=${CHECKOUT#refs/tags/}
-    echo "debug: not skipping ref checkout, checking out ${CHECKOUT}"
     git checkout "${CHECKOUT}"
   fi
 
   if [ -n "$(git show-ref refs/heads/${BRANCH})" ]; then
-    echo "debug: branch exists, checking out ${BRANCH}"
     git checkout "${BRANCH}"
   else
-    echo "debug: branch does not exists, checking out and creating ${BRANCH}"
     git checkout -b "${BRANCH}"
   fi
 
-  echo "debug: about to add files, let's run git status"
-  git status
-
-  echo "debug: adding files"
   git add .
 
   if [ ! -n "$(git status -s)" ]; then
@@ -265,9 +258,7 @@ push_to_branch() {
   fi
 
   echo "PUSH TO BRANCH ${BRANCH}"
-  echo "debug: committing"
   git commit --no-verify -m "${INPUT_COMMIT_MESSAGE}"
-  echo "debug: force pushing"
   git push --no-verify --force "${REPO_URL}"
 
   if [ "$INPUT_CREATE_PULL_REQUEST" = true ]; then
